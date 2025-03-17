@@ -1,22 +1,25 @@
 {
-  "name": "natours",
-  "version": "1.0.0",
-  "description": "A project of tour booking platform to book adventurous tours at best prices from Node.js, Express, MongoDB &amp; More: The Complete Bootcamp by Jonas Schmedtmann",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Showwaiyan/Natours.git"
-  },
-  "author": "Show Wai Yan",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Showwaiyan/Natours/issues"
-  },
-  "homepage": "https://github.com/Showwaiyan/Natours#readme",
-  "dependencies": {
-    "express": "^4.21.2"
-  }
+	"name": "natours",
+	"version": "1.0.0",
+	"description": "A project of tour booking platform to book adventurous tours at best prices from Node.js, Express, MongoDB &amp; More: The Complete Bootcamp by Jonas Schmedtmann",
+	"main": "app.js",
+	"scripts": {
+		"test": "npx nodemon app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Showwaiyan/Natours.git"
+	},
+	"author": "Show Wai Yan",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/Showwaiyan/Natours/issues"
+	},
+	"homepage": "https://github.com/Showwaiyan/Natours#readme",
+	"dependencies": {
+		"express": "^4.21.2"
+	},
+	"devDependencies": {
+		"nodemon": "^3.1.9"
+	}
 }
