@@ -4,7 +4,7 @@
 	"description": "A project of tour booking platform to book adventurous tours at best prices from Node.js, Express, MongoDB &amp; More: The Complete Bootcamp by Jonas Schmedtmann",
 	"main": "app.js",
 	"scripts": {
-		"test": "npx nodemon app.js"
+		"test": "npx NODE_ENV=development nodemon server.js"
 	},
 	"repository": {
 		"type": "git",
@@ -17,7 +17,9 @@
 	},
 	"homepage": "https://github.com/Showwaiyan/Natours#readme",
 	"dependencies": {
-		"express": "^4.21.2"
+		"dotenv": "^16.4.7",
+		"express": "^4.21.2",
+		"morgan": "^1.10.0"
 	},
 	"devDependencies": {
 		"nodemon": "^3.1.9"
