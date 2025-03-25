@@ -4,7 +4,7 @@
 	"description": "A project of tour booking platform to book adventurous tours at best prices from Node.js, Express, MongoDB &amp; More: The Complete Bootcamp by Jonas Schmedtmann",
 	"main": "app.js",
 	"scripts": {
-		"test": "npx NODE_ENV=development nodemon server.js"
+		"test": "npx nodemon server.js"
 	},
 	"repository": {
 		"type": "git",
@@ -19,6 +19,7 @@
 	"dependencies": {
 		"dotenv": "^16.4.7",
 		"express": "^4.21.2",
+		"mongoose": "^8.13.0",
 		"morgan": "^1.10.0"
 	},
 	"devDependencies": {
