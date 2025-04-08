@@ -16,9 +16,11 @@ const Tour = require("./../models/tourModel");
 exports.getAllTours = async (req, res) => {
 	try {
 		// Execulde non-query field
-		const queryObj = { ...req.query };
+		let queryObj = { ...req.query };
 		execludeField = ["page", "limit", "sort", "fields"];
 		execludeField.forEach((element) => delete queryObj[element]);
+
+		queryObj = JSON.parse(JSON.stringify(queryObj).replace(/\b(gt|gte|lt|lte)\b/g, (match) => `$${match}`));
 
 		const query = Tour.find(queryObj);
 
