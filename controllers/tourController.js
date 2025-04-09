@@ -12,6 +12,12 @@ const Tour = require("./../models/tourModel");
 // 	}
 // 	next();
 // };
+exports.getTopFiveCheapTours = async (req, res, next) => {
+	req.query.sort = "price,-ratingAverage";
+	req.query.fields = "name,duration,difficulty,ratingAverage,price,summary";
+	req.query.limit = "5";
+	next();
+};
 
 exports.getAllTours = async (req, res) => {
 	try {
@@ -28,8 +34,6 @@ exports.getAllTours = async (req, res) => {
 		// Sorting
 		if (req.query.sort) {
 			const sortBy = req.query.sort.split(",").join(" ");
-			console.log(sortBy);
-
 			query = query.sort(sortBy);
 		} else {
 			query = query.sort("-createAt");
@@ -46,15 +50,14 @@ exports.getAllTours = async (req, res) => {
 		// Pagination
 		const page = req.query.page * 1 || 1;
 		const limit = req.query.limit * 1 || 10;
+
 		const skip = (page - 1) * limit;
 
 		const totalPage = await Tour.countDocuments();
 
 		if (skip >= totalPage) throw new Error("The page is not exist!");
 
-		if (req.query.page) {
-			query = query.skip(skip).limit(limit);
-		}
+		query = query.skip(skip).limit(limit);
 
 		const tours = await query;
 
