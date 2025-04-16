@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const slugify = require("slugify");
 
 const tourSchema = new mongoose.Schema(
 	{
@@ -7,6 +8,7 @@ const tourSchema = new mongoose.Schema(
 			required: [true, "Tour must have name!"],
 			unique: true,
 		},
+		slugify: String,
 		duration: {
 			type: Number,
 			required: [true, "Tour must have Duration!"],
@@ -60,6 +62,11 @@ const tourSchema = new mongoose.Schema(
 tourSchema.virtual("durationWeek").get(function () {
 	return this.duration / 7;
 });
+
+tourSchema.pre("save", function () {
+	this.slugify = slugify(this.name, { lower: true });
+});
+
 const Tour = mongoose.model("Model", tourSchema);
 
 module.exports = Tour;
