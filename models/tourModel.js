@@ -8,7 +8,7 @@ const tourSchema = new mongoose.Schema(
 			required: [true, "Tour must have name!"],
 			unique: true,
 			minLength: [10, "Tour name must be more or equal 10 Character!"],
-			maxLength: [40, "Tour name must be less or equal 40 Character!"],
+			maxLength: [40, "Tour name must be more or equal 10 Character!"],
 		},
 		slugify: String,
 		duration: {
@@ -41,7 +41,15 @@ const tourSchema = new mongoose.Schema(
 			type: Number,
 			required: [true, "Each tour is need pricing"],
 		},
-		priceDiscount: Number,
+		priceDiscount: {
+			type: Number,
+			validate: {
+				validator: function (value) {
+					return value < this.price;
+				},
+				message: "Discount price {VALUE} must be lower than regular price1",
+			},
+		},
 		summary: {
 			type: String,
 			required: [true, "Tour must have summary!"],
