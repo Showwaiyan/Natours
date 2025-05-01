@@ -5,6 +5,7 @@
 	"main": "app.js",
 	"scripts": {
 		"test": "npx nodemon server.js",
+        "production": "npx NODE_ENV=production nodemon server.js",
 		"debug": "ndb server.js"
 	},
 	"repository": {
