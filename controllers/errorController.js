@@ -6,9 +6,14 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldErrorDB = (err) => {
-	console.log(err);
 	const value = err.errorResponse.errmsg.match(/"([^"]+)"/)[0];
 	const message = `Duplicate value ${value}, Please use another value`;
+	return new AppError(message, 400);
+};
+
+const handleValidationErrorDB = (err) => {
+	const errors = Object.values(err.errors).map((el) => el.message);
+	const message = `Invalid Input. ${errors.join(". ")}`;
 	return new AppError(message, 400);
 };
 
@@ -43,11 +48,11 @@ module.exports = (err, req, res, next) => {
 	if (process.env.NODE_ENV === "development") {
 		sendErrorDev(err, res);
 	} else if (process.env.NODE_ENV === "production") {
-		let error = { ...err };
+		let error = { ...err, name: err.name };
 
 		if (error.kind === "ObjectId") error = handleCastErrorDB(error);
 		if (error.code === 11000) error = handleDuplicateFieldErrorDB(error);
-
+		if (error.name === "ValidationError") error = handleValidationErrorDB(error);
 		sendErrorProd(error, res);
 	}
 };
