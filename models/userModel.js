@@ -24,8 +24,8 @@ const userSchema = mongoose.Schema({
 		type: String,
 		require: [true, "Confirm Password cannot be empty"],
 		validate: {
-			validator: function () {
-				return this.passwordConfirm === this.password;
+			validator: function (value) {
+				return value === this.password;
 			},
 			message: (props) => `${props.value} is not same as Password!`,
 		},
