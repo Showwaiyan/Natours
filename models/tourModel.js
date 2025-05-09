@@ -83,6 +83,6 @@ tourSchema.pre("save", function () {
 	this.slugify = slugify(this.name, { lower: true });
 });
 
-const Tour = mongoose.model("Model", tourSchema);
+const Tour = mongoose.model("Tours", tourSchema);
 
 module.exports = Tour;

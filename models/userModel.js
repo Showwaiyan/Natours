@@ -20,6 +20,7 @@ const userSchema = mongoose.Schema({
 		type: String,
 		require: [true, "Password cannot be empty"],
 		minLength: [8, "Passwrod should be long at least 8"],
+		select: false,
 	},
 	passwordConfirm: {
 		type: String,
@@ -42,6 +43,11 @@ userSchema.pre("save", async function (next) {
 	this.passwordConfirm = undefined;
 	next();
 });
+
+// Instance Method for password comparing
+userSchema.methods.comparePassword = async function (candidatePassword, userPassword) {
+	return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 // Create Model
 const User = mongoose.model("User", userSchema);
