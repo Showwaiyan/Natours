@@ -4,42 +4,57 @@ const AppError = require("./../utilities/appError");
 const catchAsync = require("./../utilities/catchAsync");
 
 const signToken = (userId) => {
-	return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-		expiresIn: process.env.JWT_EXPIRES_IN,
-	});
+  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
 };
 
 exports.signUp = catchAsync(async (req, res, next) => {
-	const newUser = await User.create({
-		name: req.body.name,
-		email: req.body.email,
-		password: req.body.password,
-		passwordConfirm: req.body.passwordConfirm,
-	});
+  const newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+  });
 
-	const token = signToken(newUser._id);
+  const token = signToken(newUser._id);
 
-	res.status(201).json({
-		status: "success",
-		token,
-		data: {
-			user: newUser,
-		},
-	});
+  res.status(201).json({
+    status: "success",
+    token,
+    data: {
+      user: newUser,
+    },
+  });
 });
 
 exports.logIn = catchAsync(async (req, res, next) => {
-	const { email, password } = req.body;
+  const { email, password } = req.body;
 
-	if (!email || !password) return next(new AppError("Email and Password are needed to Log In!", 400));
-	const user = await User.findOne({ email });
+  if (!email || !password)
+    return next(new AppError("Email and Password are needed to Log In!", 400));
+  const user = await User.findOne({ email });
 
-	if (!user || !(await user.comparePassword(password, user.password)))
-		return next(new AppError("Email or Password are incorrect!", 401));
+  if (!user || !(await user.comparePassword(password, user.password)))
+    return next(new AppError("Email or Password are incorrect!", 401));
 
-	const token = signToken(user._id);
-	res.status(201).json({
-		status: "success",
-		token,
-	});
+  const token = signToken(user._id);
+  res.status(201).json({
+    status: "success",
+    token,
+  });
+});
+
+exports.authMiddleWare = catchAsync(async (req, res, next) => {
+  // Check payload token
+  if (
+    !req.headers.authorization &&
+    !req.headers.authorization.startsWith("Bearer")
+  )
+    return next(new AppError("Please log in!", 401));
+  const token = req.headers.authorization.split(" ")[1];
+  // Check token valid
+  // Check user exist
+  // Check user change password after token was issued
+  next()
 });
