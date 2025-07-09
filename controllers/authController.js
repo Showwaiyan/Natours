@@ -48,7 +48,10 @@ exports.logIn = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // Check payload token
-  if (!req.headers.authorization && !req.headers.authorization.startsWith("Bearer"))
+  if (
+    !req.headers.authorization &&
+    !req.headers.authorization.startsWith("Bearer")
+  )
     return next(new AppError("Please log in!", 401));
   const token = req.headers.authorization.split(" ")[1];
 
@@ -82,3 +85,15 @@ exports.restrict = (...roles) => {
     next();
   };
 };
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+  // finding user with email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user)
+    return next(new AppError("There is no user with this email!", 404));
+
+  // create token and encrypt
+  const resetToken = user.createResetPasswordToken();
+  await user.save();
+  return;
+});

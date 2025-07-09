@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
-const { JsonWebTokenError } = require("jsonwebtoken");
+const crypto = require("crypto");
 
 // Create Schema
 const userSchema = mongoose.Schema({
@@ -17,10 +17,10 @@ const userSchema = mongoose.Schema({
     validate: [validator.isEmail, "Email address is not valid"],
   },
   photo: String,
-  role : {
+  role: {
     type: String,
-    enum: ["user","guide","lead-guide","admin"],
-    default: "user"
+    enum: ["user", "guide", "lead-guide", "admin"],
+    default: "user",
   },
   password: {
     type: String,
@@ -39,6 +39,8 @@ const userSchema = mongoose.Schema({
     },
   },
   passwordChangeAt: Date,
+  passwordRestToken: String,
+  passwordRestTokenExpire: Date,
 });
 
 // Password Encrypting
@@ -69,6 +71,15 @@ userSchema.methods.changedPasswordAfter = function(JwtTimeStamp) {
     return JwtTimeStamp < passwordChangeTimeStamp;
   }
   return false;
+};
+userSchema.methods.createResetPasswordToken = function() {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.passwordResetTokenExpire = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 // Create Model
