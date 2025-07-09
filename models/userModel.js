@@ -17,6 +17,11 @@ const userSchema = mongoose.Schema({
     validate: [validator.isEmail, "Email address is not valid"],
   },
   photo: String,
+  role : {
+    type: String,
+    enum: ["user","guide","lead-guide","admin"],
+    default: "user"
+  },
   password: {
     type: String,
     require: [true, "Password cannot be empty"],
