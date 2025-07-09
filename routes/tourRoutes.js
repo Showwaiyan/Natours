@@ -13,7 +13,7 @@ router.route("/tours-stats").get(tourController.getToursStats);
 
 router
   .route("/")
-  .get(authController.authMiddleWare, tourController.getAllTours)
+  .get(authController.protected, tourController.getAllTours)
   .post(tourController.createTour);
 
 router
