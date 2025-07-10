@@ -39,8 +39,8 @@ const userSchema = mongoose.Schema({
     },
   },
   passwordChangeAt: Date,
-  passwordRestToken: String,
-  passwordRestTokenExpire: Date,
+  passwordResetToken: String,
+  passwordResetTokenExpire: Date,
 });
 
 // Password Encrypting
@@ -50,6 +50,9 @@ userSchema.pre("save", async function(next) {
   this.password = await bcrypt.hash(this.password, 12);
 
   this.passwordConfirm = undefined;
+
+  if (this.isNew) return next();
+  this.passwordChangeAt = Date.now() - 1000;
   next();
 });
 
@@ -80,6 +83,17 @@ userSchema.methods.createResetPasswordToken = function() {
     .digest("hex");
   this.passwordResetTokenExpire = Date.now() + 10 * 60 * 1000;
   return resetToken;
+};
+userSchema.methods.compareResetPasswordToken = function(
+  candidateToken,
+  userToken,
+) {
+  const tokenToHash = crypto
+    .createHash("sha256")
+    .update(candidateToken)
+    .digest("hex");
+  console.log(candidateToken, userToken);
+  return tokenToHash === userToken;
 };
 
 // Create Model
