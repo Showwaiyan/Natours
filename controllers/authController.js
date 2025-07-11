@@ -11,6 +11,17 @@ const signToken = (userId) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 };
+const sendToken = (user, status, res) => {
+  const token = signToken(user._id);
+
+  res.status(status).json({
+    status: "success",
+    token,
+    data: {
+      user
+    },
+  });
+};
 
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -20,15 +31,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: "success",
-    token,
-    data: {
-      user: newUser,
-    },
-  });
+  sendToken(newUser, 201, res);
 });
 
 exports.logIn = catchAsync(async (req, res, next) => {
@@ -40,12 +43,8 @@ exports.logIn = catchAsync(async (req, res, next) => {
 
   if (!user || !(await user.comparePassword(password, user.password)))
     return next(new AppError("Email or Password are incorrect!", 401));
-
-  const token = signToken(user._id);
-  res.status(201).json({
-    status: "success",
-    token,
-  });
+  
+  sendToken(user,201,res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -130,19 +129,43 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     .createHash("sha256")
     .update(req.params.token)
     .digest("hex");
-  const user = await User.findOne({ passwordResetToken: hashToken, passwordResetTokenExpire: {$gt: Date.now()}});
+  const user = await User.findOne({
+    passwordResetToken: hashToken,
+    passwordResetTokenExpire: { $gt: Date.now() },
+  });
   if (!user)
-    return next(new AppError("Token is invalid or expired, request new token again!", 404));
+    return next(
+      new AppError(
+        "Token is invalid or expired, request new token again!",
+        404,
+      ),
+    );
 
   user.password = req.body.newPassword;
-  user.passwordConfrim = req.body.passwordConfirm;
+  user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetTokenExpire = undefined;
-  user.save();
+  await user.save();
 
-  const token = signToken(user._id);
-  res.status(201).json({
-    status: "success",
-    token,
-  });
+  sendToken(user,201,res)
+});
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  if (req.body.currentPassword === req.body.newPassword)
+    return next(
+      new AppError(
+        "Current password and new password cannot be the same!",
+        401,
+      ),
+    );
+
+  const user = await User.findById(req.user.id).select("+password");
+  if (!(await user.comparePassword(req.body.currentPassword, user.password)))
+    return next(new AppError("Your current password is incorrect!", 401));
+
+  user.password = req.body.newPassword;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  sendToken(user,201,res)
 });

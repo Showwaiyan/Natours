@@ -64,13 +64,11 @@ userSchema.methods.comparePassword = async function(
   return await bcrypt.compare(candidatePassword, userPassword);
 };
 userSchema.methods.changedPasswordAfter = function(JwtTimeStamp) {
-  console.log(this);
   if (this.passwordChangeAt) {
     const passwordChangeTimeStamp = parseInt(
       this.passwordChangeAt.getTime() / 1000,
       10,
     );
-    console.log(passwordChangeTimeStamp, JwtTimeStamp);
     return JwtTimeStamp < passwordChangeTimeStamp;
   }
   return false;
@@ -92,7 +90,6 @@ userSchema.methods.compareResetPasswordToken = function(
     .createHash("sha256")
     .update(candidateToken)
     .digest("hex");
-  console.log(candidateToken, userToken);
   return tokenToHash === userToken;
 };
 
