@@ -32,7 +32,7 @@ const userSchema = mongoose.Schema({
     type: String,
     require: [true, "Confirm Password cannot be empty"],
     validate: {
-      validator: function(value) {
+      validator: function (value) {
         return value === this.password;
       },
       message: (props) => `${props.value} is not same as Password!`,
@@ -41,10 +41,15 @@ const userSchema = mongoose.Schema({
   passwordChangeAt: Date,
   passwordResetToken: String,
   passwordResetTokenExpire: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 // Password Encrypting
-userSchema.pre("save", async function(next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
   this.password = await bcrypt.hash(this.password, 12);
@@ -55,15 +60,19 @@ userSchema.pre("save", async function(next) {
   this.passwordChangeAt = Date.now() - 1000;
   next();
 });
+userSchema.pre(/^find/, async function (next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
 
 // Instance Method for password comparing
-userSchema.methods.comparePassword = async function(
+userSchema.methods.comparePassword = async function (
   candidatePassword,
   userPassword,
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
-userSchema.methods.changedPasswordAfter = function(JwtTimeStamp) {
+userSchema.methods.changedPasswordAfter = function (JwtTimeStamp) {
   if (this.passwordChangeAt) {
     const passwordChangeTimeStamp = parseInt(
       this.passwordChangeAt.getTime() / 1000,
@@ -73,7 +82,7 @@ userSchema.methods.changedPasswordAfter = function(JwtTimeStamp) {
   }
   return false;
 };
-userSchema.methods.createResetPasswordToken = function() {
+userSchema.methods.createResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(32).toString("hex");
   this.passwordResetToken = crypto
     .createHash("sha256")
@@ -82,7 +91,7 @@ userSchema.methods.createResetPasswordToken = function() {
   this.passwordResetTokenExpire = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
-userSchema.methods.compareResetPasswordToken = function(
+userSchema.methods.compareResetPasswordToken = function (
   candidateToken,
   userToken,
 ) {
