@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
 const helmet = require("helmet");
+const mongoSanitize = require('express-mongo-sanitize');
 
 const AppError = require("./utilities/appError");
 
@@ -29,6 +30,8 @@ app.use(limiter);
 
 app.use(express.json({limit: "10kb"}));
 app.use(express.static(`${__dirname}/public`));
+
+app.use(mongoSanitize());
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
