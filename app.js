@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+const rateLimit = require("express-rate-limit");
 
 const AppError = require("./utilities/appError");
 
@@ -12,15 +13,23 @@ const app = express();
 
 // 1) MIDDLEWARES
 if (process.env.NODE_ENV === "development") {
-	app.use(morgan("dev"));
+  app.use(morgan("dev"));
 }
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 100,
+  message: "Too many request from this ip, please try again in a hour",
+});
+
+app.use(limiter);
 
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
-	req.requestTime = new Date().toISOString();
-	next();
+  req.requestTime = new Date().toISOString();
+  next();
 });
 
 // 3) ROUTES
@@ -29,11 +38,11 @@ app.use("/api/v1/users", userRouter);
 
 // Handle Unhandle Route
 app.all("*", (req, res, next) => {
-	// const err = new Error(`Can't find ${req.originalUrl} on the server!`);
-	// err.statusCode = 404;
-	// err.status = "Fail";
+  // const err = new Error(`Can't find ${req.originalUrl} on the server!`);
+  // err.statusCode = 404;
+  // err.status = "Fail";
 
-	next(new AppError(`Can't find ${req.originalUrl} on the server!`, 404));
+  next(new AppError(`Can't find ${req.originalUrl} on the server!`, 404));
 });
 
 // Express Error Handle Middle
