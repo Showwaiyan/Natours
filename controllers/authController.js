@@ -14,11 +14,23 @@ const signToken = (userId) => {
 const sendToken = (user, status, res) => {
   const token = signToken(user._id);
 
+  // token will send with cookies
+  const cookieOption = {
+    maxAge: process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+  };
+
+  if (process.env.NODE_ENV == "production") cookieOption.secure = true;
+
+  res.cookie("jwt", token, cookieOption);
+
+  user.password = undefined;
+
   res.status(status).json({
     status: "success",
     token,
     data: {
-      user
+      user,
     },
   });
 };
@@ -43,8 +55,8 @@ exports.logIn = catchAsync(async (req, res, next) => {
 
   if (!user || !(await user.comparePassword(password, user.password)))
     return next(new AppError("Email or Password are incorrect!", 401));
-  
-  sendToken(user,201,res);
+
+  sendToken(user, 201, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -147,7 +159,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetTokenExpire = undefined;
   await user.save();
 
-  sendToken(user,201,res)
+  sendToken(user, 201, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -167,5 +179,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   await user.save();
 
-  sendToken(user,201,res)
+  sendToken(user, 201, res);
 });
