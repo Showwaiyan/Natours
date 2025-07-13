@@ -6,7 +6,7 @@ const { dirname } = require("path");
 
 dotenv.config({ path: "./config.env" });
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`));
 
 const DB = process.env.DB_REMOTE.replace("<DB_PASSWORD>", process.env.DB_PASSWORD);
 const DB_OPTION = {
