@@ -85,7 +85,10 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
   if (!tour) return next(new AppError("Can't find a tour with this ID", 404));
-  res.status(204);
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
 });
 
 exports.getToursStats = catchAsync(async (req, res, next) => {
