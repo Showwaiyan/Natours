@@ -44,7 +44,7 @@ const tourSchema = new mongoose.Schema(
     priceDiscount: {
       type: Number,
       validate: {
-        validator: function (value) {
+        validator: function(value) {
           return value < this.price;
         },
         message: "Discount price {VALUE} must be lower than regular price1",
@@ -104,13 +104,19 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   },
 );
-tourSchema.virtual("durationWeek").get(function () {
+tourSchema.virtual("durationWeek").get(function() {
   return this.duration / 7;
 });
 
-tourSchema.pre("save", function () {
+tourSchema.pre("save", function() {
   this.slugify = slugify(this.name, { lower: true });
 });
+tourSchema.pre(/^find/, function() {
+  this.populate({
+    path: "guides",
+    select: "-__v -passwordChangeAt"
+  })
+})
 
 const Tour = mongoose.model("Tours", tourSchema);
 
