@@ -3,12 +3,9 @@ const catchAsync = require(".././utilities/catchAsync");
 const ApiFeature = require(".././utilities/apiFeatures");
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
-  const apiFeature = new ApiFeature(Review.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination();
-  const reviews = await apiFeature.query;
+  let filter = {};
+  if (req.params.tourId) filter = { tour: req.params.tourId };
+  const reviews = await Review.find(filter);
   res.status(200).json({
     status: "success",
     requestedAt: req.requestTime,
