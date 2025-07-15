@@ -1,5 +1,4 @@
 const Review = require(".././models/reviewModel");
-const AppError = require(".././utilities/appError");
 const catchAsync = require(".././utilities/catchAsync");
 const ApiFeature = require(".././utilities/apiFeatures");
 
