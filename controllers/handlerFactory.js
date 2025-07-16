@@ -1,5 +1,6 @@
 const catchAsync = require("./../utilities/catchAsync");
 const AppError = require("./../utilities/appError");
+const APIFeatures = require("./../utilities/apiFeatures");
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res) => {
@@ -8,6 +9,50 @@ exports.createOne = (Model) =>
       status: "success",
       data: {
         data: doc,
+      },
+    });
+  });
+
+exports.getOne = (Model, populateOption) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+    if (populateOption) query = query.populate(populateOption);
+    const doc = await query;
+    if (!doc)
+      return next(new AppError("Can't find a document with this ID", 404));
+
+    res.status(200).json({
+      status: "success",
+      data: {
+        data: doc,
+      },
+    });
+  });
+
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    // Only for review
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    let query;
+    if (filter) query = Model.find(filter);
+    query = Model.find();
+
+    const apiFeatures = new APIFeatures(query, req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .pagination();
+
+    const docs = await apiFeatures.query;
+
+    res.status(200).json({
+      status: "success",
+      requestedAt: req.requestTime,
+      results: docs.length,
+      data: {
+        data: docs,
       },
     });
   });
