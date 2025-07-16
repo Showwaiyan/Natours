@@ -11,6 +11,11 @@ const filterBody = (obj, ...filters) => {
   return filteredBody;
 };
 
+exports.getMe = (req,res,next) => {
+  req.params.id = req.user.id;
+  next()
+}
+
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)
     return next(new AppError("You can't update password in here", 401));
