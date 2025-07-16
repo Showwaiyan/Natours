@@ -2,6 +2,8 @@ const Tour = require("./../models/tourModel");
 const APIFeatures = require("./../utilities/apiFeatures");
 const catchAsync = require("./../utilities/catchAsync");
 const AppError = require("./../utilities/appError");
+const factory = require("./handlerFactory");
+
 // const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 
 // exports.checkID = (req, res, next, val) => {
@@ -15,6 +17,7 @@ const AppError = require("./../utilities/appError");
 // 	}
 // 	next();
 // };
+
 exports.getTopFiveCheapTours = catchAsync(async (req, res, next) => {
   req.query.sort = "price,-ratingAverage";
   req.query.fields = "name,duration,difficulty,ratingAverage,price,summary";
@@ -82,14 +85,15 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id);
-  if (!tour) return next(new AppError("Can't find a tour with this ID", 404));
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
+exports.deleteTour = factory.deleteOne(Tour);
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findByIdAndDelete(req.params.id);
+//   if (!tour) return next(new AppError("Can't find a tour with this ID", 404));
+//   res.status(204).json({
+//     status: "success",
+//     data: null,
+//   });
+// });
 
 exports.getToursStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
