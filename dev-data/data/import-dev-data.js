@@ -2,11 +2,14 @@ const fs = require("fs");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const Tour = require("./../../models/tourModel");
-const { dirname } = require("path");
+const User = require("./../../models/userModel");
+const Review = require("./../../models/reviewModel");
 
 dotenv.config({ path: "./config.env" });
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`));
+const users = JSON.parse(fs.readFileSync(`${__dirname}/users.json`));
+const reviews = JSON.parse(fs.readFileSync(`${__dirname}/reviews.json`));
 
 const DB = process.env.DB_REMOTE.replace("<DB_PASSWORD>", process.env.DB_PASSWORD);
 const DB_OPTION = {
@@ -22,20 +25,24 @@ mongoose
 		console.log("DB is connected");
 	});
 
-const importTours = async () => {
+const importDocuments = async () => {
 	try {
 		await Tour.create(tours);
-		console.log("Tours are successfully imported");
+		await User.create(users, {validateBeforeSave: false});
+		await Review.create(reviews);
+		console.log("Documents are successfully imported");
 	} catch (err) {
 		console.log(err);
 	}
 	process.exit();
 };
 
-const deleteTours = async () => {
+const deleteDocuments = async () => {
 	try {
 		await Tour.deleteMany();
-		console.log("Tours are successfully deleted");
+		await User.deleteMany();
+		await Review.deleteMany();
+		console.log("Documents are successfully deleted");
 	} catch (err) {
 		console.log(err);
 	}
@@ -44,10 +51,10 @@ const deleteTours = async () => {
 
 switch (process.argv[2]) {
 	case "--import":
-		importTours();
+		importDocuments();
 		break;
 	case "--delete":
-		deleteTours();
+		deleteDocuments();
 		break;
 	default:
 		console.log("Script finished");
