@@ -3,7 +3,7 @@ const catchAsync = require(".././utilities/catchAsync");
 const factory = require("./handlerFactory");
 
 exports.setTourAndUserId = (req, res, next) => {
-  if (!req.body.tour) req.body.tour = req.params.id;
+  if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
   next();
 };
