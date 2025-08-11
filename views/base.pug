@@ -1,1 +1,18 @@
-h1 Hello from node js
+doctype html
+head
+  link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
+  link(rel='stylesheet' href='css/style.css')
+  link(rel='shortcut icon' type='image/png' href='img/favicon.png')
+  meta(charset='UTF-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1.0')
+  title Natours | #{title} 
+body
+  // Header
+  include _header
+
+  // Content 
+  block content
+    h1 This is from base
+
+  // Footer
+  include _footer
