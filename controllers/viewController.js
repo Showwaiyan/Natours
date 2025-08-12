@@ -15,8 +15,14 @@ exports.getOverview = catchAsync(async (req, res) => {
   });
 });
 
-exports.getTour = (req, res) => {
+exports.getTour = catchAsync(async (req, res) => {
+  const tour = await Tour.findOne({ slugify: req.params.slug }).populate({
+    path: "reviews",
+    fields: "review user rating",
+  });
+  console.log(tour.reviews);
   res.status(200).render("tour", {
     title: "Tour",
+    tour
   });
-};
+});
