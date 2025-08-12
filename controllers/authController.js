@@ -64,7 +64,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   // Check payload token
   if (
     !req.headers.authorization &&
-    !req.headers.authorization.startsWith("Bearer")
+    !req.headers.authorization?.startsWith("Bearer")
   )
     return next(new AppError("Please log in!", 401));
   const token = req.headers.authorization.split(" ")[1];
