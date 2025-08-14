@@ -24,34 +24,26 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // 1) MIDDLEWARES
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         defaultSrc: ["'self'"],
-//         scriptSrc: [
-//           "'self'",
-//           "https://unpkg.com", // for leaflet.js
-//         ],
-//         styleSrc: [
-//           "'self'",
-//           "'unsafe-inline'", // required for Leaflet CSS inline styles
-//           "https://unpkg.com",
-//           "https://fonts.googleapis.com",
-//         ],
-//         fontSrc: ["'self'", "https://fonts.gstatic.com"],
-//         imgSrc: [
-//           "'self'",
-//           "data:",
-//           "https://tiles.stadiamaps.com", // allow Stadia tiles
-//           "https://c.tile.openstreetmap.org", // for attribution logos, etc.
-//           "https://b.tile.openstreetmap.org",
-//           "https://a.tile.openstreetmap.org",
-//         ],
-//       },
-//     },
-//   }),
-// );
+// Further HELMET configuration for Security Policy (CSP)
+const scriptSrcUrls = ["https://unpkg.com/", "https://tile.openstreetmap.org"];
+const styleSrcUrls = ["https://unpkg.com/", "https://fonts.googleapis.com/"];
+const connectSrcUrls = ["https://unpkg.com", "https://tiles.stadiamaps.com"];
+const fontSrcUrls = ["fonts.googleapis.com", "fonts.gstatic.com"];
+
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: [],
+      connectSrc: ["'self'", ...connectSrcUrls],
+      scriptSrc: ["'self'", ...scriptSrcUrls],
+      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      workerSrc: ["'self'", "blob:"],
+      objectSrc: [],
+      imgSrc: ["'self'", "blob:", "data:", "https:"],
+      fontSrc: ["'self'", ...fontSrcUrls],
+    },
+  }),
+);
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
