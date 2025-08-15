@@ -1,6 +1,4 @@
-const locations = JSON.parse(document.getElementById("map").dataset.locations);
-
-function initMap() {
+export function initMap(locations) {
   const bounds = locations.map((location) => location.coordinates.toReversed());
   const map = L.map("map").fitBounds(bounds, {
     padding: [100, 100],
@@ -50,4 +48,3 @@ function initMap() {
 }
 
 // STEP 3: Call initMap when DOM is ready
-document.addEventListener("DOMContentLoaded", initMap);
