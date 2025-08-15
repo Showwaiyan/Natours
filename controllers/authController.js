@@ -62,12 +62,15 @@ exports.logIn = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   // Check payload token
+  let token;
   if (
-    !req.headers.authorization &&
-    !req.headers.authorization?.startsWith("Bearer")
+    req.headers.authorization &&
+    req.headers.authorization?.startsWith("Bearer")
   )
-    return next(new AppError("Please log in!", 401));
-  const token = req.headers.authorization.split(" ")[1];
+    token = req.headers.authorization.split(" ")[1];
+  else if (req.cookies.jwt) token = req.cookies.jwt;
+
+  if (!token) return next(new AppError("Please log in!", 401));
 
   // Check token valid
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
@@ -181,4 +184,24 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   sendToken(user, 201, res);
+});
+
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  // Check payload token
+  if (!req.cookies.jwt) return next();
+  const token = req.cookies.jwt;
+
+  // Check token valid
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // Check user exist
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) return next();
+
+  // Check user change password after token was issued
+  if (currentUser.changedPasswordAfter(decoded.iat)) return next();
+
+  // Granted Access
+  res.locals.user = currentUser;
+  return next();
 });

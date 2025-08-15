@@ -8,7 +8,7 @@ document.querySelector(".form").addEventListener("submit", (e) => {
   if (!validateEmail(email)) return;
 
   // make http request
-  login(email,password)
+  login(email, password);
 });
 
 function validateEmail(email) {
@@ -21,15 +21,17 @@ async function login(email, password) {
   try {
     const url = "http://localhost:5500/api/v1/users/login";
     const respond = await axios.post(url, {
-      email, password
-    })
+      email,
+      password,
+    });
     const result = await respond.data;
-    if (!respond.statusText) {
-      console.info(respond.status, result);
-      throw new Error("Respond is not ok");
+    if (respond.data.status === "success") {
+      alert("Logged In Successfully");
+      window.setTimeout(() => {
+        window.location.assign("/");
+      }, 1500);
     }
-    console.info(respond.status, result);
   } catch (error) {
-    console.error(error);
+    alert(error.respond.data.message);
   }
 }

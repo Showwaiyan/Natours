@@ -26,7 +26,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // 1) MIDDLEWARES
 // Further HELMET configuration for Security Policy (CSP)
-const scriptSrcUrls = ["https://unpkg.com/", "https://tile.openstreetmap.org"];
+const scriptSrcUrls = [
+  "https://unpkg.com/",
+  "https://tile.openstreetmap.org",
+  "https://cdnjs.cloudflare.com",
+];
 const styleSrcUrls = ["https://unpkg.com/", "https://fonts.googleapis.com/"];
 const connectSrcUrls = ["https://unpkg.com", "https://tiles.stadiamaps.com"];
 const fontSrcUrls = ["fonts.googleapis.com", "fonts.gstatic.com"];
@@ -79,7 +83,6 @@ app.use(
 
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  console.log(req.cookies);
   next();
 });
 
