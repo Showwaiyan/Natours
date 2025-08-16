@@ -1405,6 +1405,7 @@ body {
 
 .popupCustom .leaflet-popup-tip,
 .popupCustom .leaflet-popup-content-wrapper {
+  display: inline;
   background: white;
   color: gray;
   font-size: 1rem;

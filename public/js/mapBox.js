@@ -1,12 +1,16 @@
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import "@maplibre/maplibre-gl-leaflet";
+import maplibregl from "maplibre-gl/dist/maplibre-gl.js";
+import rtlTextPlugin from "@mapbox/mapbox-gl-rtl-text";
+
 export function initMap(locations) {
   const bounds = locations.map((location) => location.coordinates.toReversed());
-  const map = L.map("map").fitBounds(bounds, {
-    padding: [100, 100],
-  });
+  const map = L.map("map").fitBounds(bounds);
   map.scrollWheelZoom.disable();
 
   maplibregl.setRTLTextPlugin(
-    "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js",
+    rtlTextPlugin,true
   );
 
   L.maplibreGL({
@@ -42,9 +46,6 @@ export function initMap(locations) {
     L.marker(location.coordinates.toReversed(), { icon: markerIcon }).addTo(
       map,
     );
+    console.log(location.coordinates.toReversed());
   });
-
-  // Bound
 }
-
-// STEP 3: Call initMap when DOM is ready

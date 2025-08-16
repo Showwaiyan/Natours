@@ -25,23 +25,39 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // 1) MIDDLEWARES
-// Further HELMET configuration for Security Policy (CSP)
-const scriptSrcUrls = ["https://unpkg.com/", "https://tile.openstreetmap.org"];
-const styleSrcUrls = ["https://unpkg.com/", "https://fonts.googleapis.com/"];
-const connectSrcUrls = ["https://unpkg.com", "https://tiles.stadiamaps.com"];
-const fontSrcUrls = ["fonts.googleapis.com", "fonts.gstatic.com"];
-
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: [],
-      connectSrc: ["'self'", ...connectSrcUrls],
-      scriptSrc: ["'self'", ...scriptSrcUrls],
-      styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+      defaultSrc: ["'self'"],
+
+      scriptSrc: [
+        "'self'",
+        // Only allow 'unsafe-eval' in dev (Parcel needs it)
+        ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
+        "'wasm-unsafe-eval'", // only for dev purpose
+      ],
+
+      styleSrc: [
+        "'self'",
+        "'unsafe-inline'", // Needed for Leaflet & Maplibre styles
+        "https://fonts.googleapis.com",
+      ],
+
+      connectSrc: [
+        "'self'",
+        "https://tiles.stadiamaps.com", // Map tiles
+      ],
+
+      imgSrc: ["'self'", "blob:", "data:", "https:"],
+
+      fontSrc: [
+        "'self'",
+        "https://fonts.googleapis.com",
+        "https://fonts.gstatic.com",
+      ],
+
       workerSrc: ["'self'", "blob:"],
       objectSrc: [],
-      imgSrc: ["'self'", "blob:", "data:", "https:"],
-      fontSrc: ["'self'", ...fontSrcUrls],
     },
   }),
 );
