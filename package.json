@@ -12,8 +12,8 @@
     }
   },
   "scripts": {
-    "test": "npx nodemon server.js",
-    "production": "NODE_ENV=production nodemon server.js",
+    "dev": "npx nodemon server.js",
+    "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
     "watch:js": "parcel watch --no-hmr --target frontEnd"
   },
