@@ -1,5 +1,5 @@
 import axios from "axios";
-import { showAlert } from "./alert"
+import { showAlert } from "./alert";
 
 export function validateEmail(email) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,7 +16,7 @@ export async function login(email, password) {
     });
     const result = await response.data;
     if (result.status === "success") {
-      showAlert("success", "Logged In Successfully")
+      showAlert("success", "Logged In Successfully");
       window.setTimeout(() => {
         window.location.assign("/");
       }, 1500);
@@ -26,17 +26,17 @@ export async function login(email, password) {
   }
 }
 
-export async function logout()
-{
+export async function logout() {
   try {
     const url = "http://localhost:5500/api/v1/users/logout";
     const response = await axios.get(url);
     const result = await response.data;
     if (result.status === "success") {
-      showAlert("success", "Logged Out Successfully")
+      showAlert("success", "Logged Out Successfully");
       window.location.reload(true);
+      window.location.assign("/login");
     }
   } catch (error) {
-    showAlert("error", "Error Logging Out! Try Again.")
+    showAlert("error", "Error Logging Out! Try Again.");
   }
 }

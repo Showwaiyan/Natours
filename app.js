@@ -72,7 +72,7 @@ const limiter = rateLimit({
   message: "Too many request from this ip, please try again in a hour",
 });
 
-app.use(limiter);
+if (process.NODE_ENV === "production") app.use(limiter);
 
 app.use(express.json({ limit: "10kb" }));
 app.use(cookieParser());

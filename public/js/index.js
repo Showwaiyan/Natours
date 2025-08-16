@@ -1,15 +1,18 @@
 import "@babel/polyfill";
 import { validateEmail, login, logout } from "./login";
 import { initMap } from "./mapBox";
+import { updateNameAndEmail, updatePassword } from "./updateSettings";
 
 // DOM Element
-const form = document.querySelector(".form");
+const loginForm = document.querySelector(".form--login");
 const map = document.getElementById("map");
 const logOutBtn = document.querySelector(".nav__el--logout");
+const userDataForm = document.querySelector(".form-user-data");
+const userPasswordForm = document.querySelector(".form-user-password");
 
 // Log in
-if (form) {
-  form.addEventListener("submit", (e) => {
+if (loginForm) {
+  loginForm.addEventListener("submit", (e) => {
     e.preventDefault();
     // Take email and pssword
     const email = document.getElementById("email").value;
@@ -34,3 +37,23 @@ if (map) {
 if (logOutBtn) {
   logOutBtn.addEventListener("click", logout);
 }
+
+if (userDataForm) {
+  userDataForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    updateNameAndEmail(name, email);
+  });
+}
+
+if (userPasswordForm)
+  [
+    userPasswordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const currentPassword = document.getElementById("password-current").value;
+      const newPassword = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("password-confirm").value;
+      updatePassword(currentPassword, newPassword, confirmPassword);
+    }),
+  ];

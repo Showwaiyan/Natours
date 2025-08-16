@@ -22,8 +22,14 @@ exports.getTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getLogin = catchAsync(async (req, res) => {
+exports.getLogin = (req, res) => {
   res.status(200).render("login", {
     title: "Welcome to Natours",
   });
-});
+};
+
+exports.getAccount = (req,res)=>{
+  res.status(200).render("account", {
+    title: "Your Account",
+  });
+}
