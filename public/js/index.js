@@ -1,10 +1,11 @@
 import "@babel/polyfill";
-import { validateEmail, login } from "./login";
+import { validateEmail, login, logout } from "./login";
 import { initMap } from "./mapBox";
 
 // DOM Element
 const form = document.querySelector(".form");
 const map = document.getElementById("map");
+const logOutBtn = document.querySelector(".nav__el--logout");
 
 // Log in
 if (form) {
@@ -28,4 +29,8 @@ if (map) {
   document.addEventListener("DOMContentLoaded", (e) => {
     initMap(locations);
   });
+}
+
+if (logOutBtn) {
+  logOutBtn.addEventListener("click", logout);
 }

@@ -186,22 +186,36 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   sendToken(user, 201, res);
 });
 
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   // Check payload token
-  if (!req.cookies.jwt) return next();
-  const token = req.cookies.jwt;
+  try {
+    if (!req.cookies.jwt) return next();
+    const token = req.cookies.jwt;
 
-  // Check token valid
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    // Check token valid
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-  // Check user exist
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) return next();
+    // Check user exist
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) return next();
 
-  // Check user change password after token was issued
-  if (currentUser.changedPasswordAfter(decoded.iat)) return next();
+    // Check user change password after token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) return next();
 
-  // Granted Access
-  res.locals.user = currentUser;
-  return next();
-});
+    // Granted Access
+    res.locals.user = currentUser;
+    return next();
+  } catch (error) {
+    next();
+  }
+};
+
+exports.logout = async (req, res, next) => {
+  res.cookie("jwt", "loggedoutuser", {
+    maxAge: 10 * 1000,
+    httpOnly: true,
+  });
+  return res.status(200).json({
+    status: "success",
+  });
+};

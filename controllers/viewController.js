@@ -16,12 +16,12 @@ exports.getTour = catchAsync(async (req, res) => {
   });
   res.status(200).render("tour", {
     title: tour.name,
-    tour
+    tour,
   });
 });
 
-exports.getLogin = catchAsync(async (req,res)=>{
-  res.status(200).render("login",{
-    title: "Welcome to Natours"
-  })
-})
+exports.getLogin = catchAsync(async (req, res) => {
+  res.status(200).render("login", {
+    title: "Welcome to Natours",
+  });
+});
