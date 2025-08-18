@@ -2,6 +2,32 @@ const AppError = require("../utilities/appError");
 const User = require("../models/userModel");
 const catchAsync = require("../utilities/catchAsync");
 const factory = require("./handlerFactory");
+const multer = require("multer");
+
+// multer config
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "./public/img/users/");
+  },
+  filename: (req, file, cb) => {
+    const extension = file.mimetype.split("/")[1];
+    const fileName = `user-${req.user.id}-${Date.now()}.${extension}`;
+    cb(null, fileName);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith("image")) cb(null, true);
+  else
+    cb(
+      new AppError("Only image files are allowed! Please upload again.", 400),
+      false,
+    );
+};
+
+const upload = multer({ storage, fileFilter });
+
+exports.uploadUserPhoto = upload.single("photo");
 
 const filterBody = (obj, ...filters) => {
   const filteredBody = {};
@@ -11,17 +37,17 @@ const filterBody = (obj, ...filters) => {
   return filteredBody;
 };
 
-exports.getMe = (req,res,next) => {
+exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
-  next()
-}
+  next();
+};
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm)
     return next(new AppError("You can't update password in here", 401));
 
   const fliteredBody = filterBody(req.body, "name", "email");
-  console.log(fliteredBody);
+  if (req.file) fliteredBody.photo = req.file.filename;
 
   const user = await User.findByIdAndUpdate(req.user.id, fliteredBody, {
     returnDocument: "after",
