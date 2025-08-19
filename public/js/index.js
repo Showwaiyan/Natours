@@ -1,7 +1,7 @@
 import "@babel/polyfill";
 import { validateEmail, login, logout } from "./login";
 import { initMap } from "./mapBox";
-import { updateNameAndEmail, updatePassword } from "./updateSettings";
+import { updateSetting, updatePassword } from "./updateSettings";
 
 // DOM Element
 const loginForm = document.querySelector(".form--login");
@@ -41,9 +41,11 @@ if (logOutBtn) {
 if (userDataForm) {
   userDataForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const name = document.getElementById("name").value;
-    const email = document.getElementById("email").value;
-    updateNameAndEmail(name, email);
+    const form = new FormData();
+    form.append("name",document.getElementById("name").value);
+    form.append("email",document.getElementById("email").value);
+    form.append("photo",document.getElementById("photo").files[0]);
+    updateSetting(form);
   });
 }
 
