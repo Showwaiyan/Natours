@@ -1,8 +1,9 @@
 const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+
 const app = require("./app");
 const mongoose = require("mongoose");
 
-dotenv.config({ path: "./config.env" });
 
 // console.log(process.env);
 process.on("unhandledRejection", (err) => {

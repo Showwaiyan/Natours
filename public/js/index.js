@@ -2,6 +2,7 @@ import "@babel/polyfill";
 import { validateEmail, login, logout } from "./login";
 import { initMap } from "./mapBox";
 import { updateSetting, updatePassword } from "./updateSettings";
+import { bookTour } from "./stripe";
 
 // DOM Element
 const loginForm = document.querySelector(".form--login");
@@ -9,6 +10,7 @@ const map = document.getElementById("map");
 const logOutBtn = document.querySelector(".nav__el--logout");
 const userDataForm = document.querySelector(".form-user-data");
 const userPasswordForm = document.querySelector(".form-user-password");
+const bookTourBtn = document.getElementById("book-tour");
 
 // Log in
 if (loginForm) {
@@ -42,20 +44,27 @@ if (userDataForm) {
   userDataForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const form = new FormData();
-    form.append("name",document.getElementById("name").value);
-    form.append("email",document.getElementById("email").value);
-    form.append("photo",document.getElementById("photo").files[0]);
+    form.append("name", document.getElementById("name").value);
+    form.append("email", document.getElementById("email").value);
+    form.append("photo", document.getElementById("photo").files[0]);
     updateSetting(form);
   });
 }
 
-if (userPasswordForm)
-  [
-    userPasswordForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const currentPassword = document.getElementById("password-current").value;
-      const newPassword = document.getElementById("password").value;
-      const confirmPassword = document.getElementById("password-confirm").value;
-      updatePassword(currentPassword, newPassword, confirmPassword);
-    }),
-  ];
+if (userPasswordForm) {
+  userPasswordForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const currentPassword = document.getElementById("password-current").value;
+    const newPassword = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("password-confirm").value;
+    updatePassword(currentPassword, newPassword, confirmPassword);
+  });
+}
+
+if (bookTourBtn) {
+  bookTourBtn.addEventListener("click", (e) => {
+    const { tourId } = e.target.dataset;
+    bookTour(tourId);
+    bookTourBtn.textContent = "Processing....";
+  });
+}
