@@ -9,7 +9,7 @@ export async function updateSetting(data) {
         "Content-Type": "multipart/form-data",
       },
     });
-    const result = await response.data;
+    const result = response.data;
     if (result.status === "success") {
       showAlert("success", "Your Information is successfully Updated");
     }
