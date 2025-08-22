@@ -8,9 +8,8 @@ export function initMap(locations) {
   const bounds = locations.map((location) => location.coordinates.toReversed());
   const map = L.map("map").fitBounds(bounds);
   map.scrollWheelZoom.disable();
-
   maplibregl.setRTLTextPlugin(
-    rtlTextPlugin,true
+    "https://unpkg.com/@mapbox/mapbox-gl-rtl-text@0.2.3/mapbox-gl-rtl-text.min.js",
   );
 
   L.maplibreGL({
@@ -35,7 +34,7 @@ export function initMap(locations) {
     const customOptions = {
       maxWidth: 400,
       width: 200,
-      className: "popupCustom",
+      className: ".popupCustom",
       offset: [0, -26],
     };
     L.popup(customOptions)
@@ -46,6 +45,5 @@ export function initMap(locations) {
     L.marker(location.coordinates.toReversed(), { icon: markerIcon }).addTo(
       map,
     );
-    console.log(location.coordinates.toReversed());
   });
 }

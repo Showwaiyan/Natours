@@ -16,6 +16,7 @@ const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
 const viewRouter = require("./routes/viewRoutes");
+const bookingRouter = require("./routes/bookingRoutes");
 
 const app = express();
 
@@ -25,42 +26,42 @@ app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // 1) MIDDLEWARES
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-
-      scriptSrc: [
-        "'self'",
-        // Only allow 'unsafe-eval' in dev (Parcel needs it)
-        ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
-        "'wasm-unsafe-eval'", // only for dev purpose
-      ],
-
-      styleSrc: [
-        "'self'",
-        "'unsafe-inline'", // Needed for Leaflet & Maplibre styles
-        "https://fonts.googleapis.com",
-      ],
-
-      connectSrc: [
-        "'self'",
-        "https://tiles.stadiamaps.com", // Map tiles
-      ],
-
-      imgSrc: ["'self'", "blob:", "data:", "https:"],
-
-      fontSrc: [
-        "'self'",
-        "https://fonts.googleapis.com",
-        "https://fonts.gstatic.com",
-      ],
-
-      workerSrc: ["'self'", "blob:"],
-      objectSrc: [],
-    },
-  }),
-);
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//
+//       scriptSrc: [
+//         "'self'",
+//         // Only allow 'unsafe-eval' in dev (Parcel needs it)
+//         ...(process.env.NODE_ENV === "development" ? ["'unsafe-eval'"] : []),
+//         "'wasm-unsafe-eval'", // only for dev purpose
+//       ],
+//
+//       styleSrc: [
+//         "'self'",
+//         "'unsafe-inline'", // Needed for Leaflet & Maplibre styles
+//         "https://fonts.googleapis.com",
+//       ],
+//
+//       connectSrc: [
+//         "'self'",
+//         "https://tiles.stadiamaps.com", // Map tiles
+//       ],
+//
+//       imgSrc: ["'self'", "blob:", "data:", "https:"],
+//
+//       fontSrc: [
+//         "'self'",
+//         "https://fonts.googleapis.com",
+//         "https://fonts.gstatic.com",
+//       ],
+//
+//       workerSrc: ["'self'", "blob:"],
+//       objectSrc: [],
+//     },
+//   }),
+// );
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -103,6 +104,7 @@ app.use("/", viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
+app.use("/api/v1/bookings", bookingRouter);
 
 // Handle Unhandle Route
 app.all("*", (req, res, next) => {
