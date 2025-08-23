@@ -14,5 +14,6 @@ router.get(
 router.get("/tour/:slug", authContorller.isLoggedIn, viewController.getTour);
 router.get("/login", authContorller.isLoggedIn, viewController.getLogin);
 router.get("/me", authContorller.protect, viewController.getAccount);
+router.get("/my-tours", authContorller.protect, viewController.getMyTours);
 
 module.exports = router;
