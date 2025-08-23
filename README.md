@@ -196,5 +196,3 @@ This project is part of "Node.js, Express, MongoDB & More: The Complete Bootcamp
 If you encounter any issues or have questions, please create an issue in the repository or contact the development team.
 
 ---
-
-*Built with ❤️ for adventure seekers around the world*
