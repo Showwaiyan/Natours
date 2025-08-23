@@ -2,6 +2,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const Tour = require("../models/tourModel");
 const catchAsync = require("../utilities/catchAsync");
 const Booking = require("../models/bookingModel");
+const factory = require("./handlerFactory");
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // Find the Tour
@@ -20,7 +21,7 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
             name: `${tour.name} Tour`,
             description: tour.summary,
             images: [
-              "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.istockphoto.com%2Fphotos%2Ftour-group&psig=AOvVaw04mSsEB3eUDoEn9KoQToCA&ust=1755920526318000&source=images&opi=89978449",
+              `${req.protocol}://${req.get("host")}/img/tours/${tour.imageCover}`,
             ],
           },
           unit_amount: tour.price * 100,
@@ -49,3 +50,16 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 
   res.redirect(req.originalUrl.split("?")[0]);
 });
+
+exports.getAllBookings = factory.getAll(Booking);
+exports.getBooking = factory.getOne(Booking, [
+  {
+    path: "user",
+  },
+  {
+    path: "tour",
+  },
+]);
+exports.createBooking = factory.createOne(Booking);
+exports.updateBooking = factory.updateOne(Booking);
+exports.deleteBooking = factory.deleteOne(Booking);
