@@ -12,6 +12,7 @@
     }
   },
   "scripts": {
+    "start": "NODE_ENV=production node server.js",
     "dev": "npx nodemon server.js",
     "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
@@ -65,5 +66,8 @@
     "ndb": "^1.1.5",
     "nodemon": "^3.1.9",
     "parcel": "^2.15.4"
+  },
+  "engines": {
+    "node": ">=10.0.0"
   }
 }
