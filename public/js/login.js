@@ -9,7 +9,7 @@ export function validateEmail(email) {
 
 export async function login(email, password) {
   try {
-    const url = "http://localhost:5500/api/v1/users/login";
+    const url = "/api/v1/users/login";
     const response = await axios.post(url, {
       email,
       password,
@@ -28,7 +28,7 @@ export async function login(email, password) {
 
 export async function logout() {
   try {
-    const url = "http://localhost:5500/api/v1/users/logout";
+    const url = "/api/v1/users/logout";
     const response = await axios.get(url);
     const result = await response.data;
     if (result.status === "success") {

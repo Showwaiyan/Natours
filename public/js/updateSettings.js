@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function updateSetting(data) {
   try {
-    const url = "http://localhost:5500/api/v1/users/updateme";
+    const url = "/api/v1/users/updateme";
     const response = await axios.patch(url, data, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -24,7 +24,7 @@ export async function updatePassword(
   confirmPassword,
 ) {
   try {
-    const url = "http://localhost:5500/api/v1/users/updatepassword";
+    const url = "/api/v1/users/updatepassword";
     const response = await axios.patch(url, {
       currentPassword,
       newPassword,
