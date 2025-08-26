@@ -15,7 +15,8 @@
     "dev": "npx nodemon server.js",
     "prod": "NODE_ENV=production node server.js",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch --no-hmr --target frontEnd"
+    "watch:js": "parcel watch --no-hmr --target frontEnd",
+    "build:js": "parcel build --no-hmr --target frontEnd"
   },
   "repository": {
     "type": "git",
