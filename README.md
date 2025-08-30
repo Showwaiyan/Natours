@@ -193,4 +193,4 @@ This project is part of "Node.js, Express, MongoDB & More: The Complete Bootcamp
 
 ## 📞 Support
 
-If you encounter any issues or have questions, please create an issue in the repository or contact the development team.
+If you encounter any issues or have questions, please create an issue in the repository.
